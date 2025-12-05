@@ -13,6 +13,16 @@ const mealInput = document.getElementById("mealInput");
 const addMealBtn = document.getElementById("addMealBtn");
 const mealList = document.getElementById("mealList");
 const clearBtn = document.getElementById("clearBtn");
+// Modal elements for recipe details
+const recipeModal = document.getElementById("recipeModal");
+const recipeModalContent = document.getElementById("recipeModalContent");
+const recipeModalClose = document.getElementById("recipeModalClose");
+
+if (recipeModalClose) {
+    recipeModalClose.addEventListener("click", () => {
+        recipeModal.style.display = "none";
+    });
+}
 
 function savePlan() {
     localStorage.setItem("mealPlan", JSON.stringify(mealPlan));
@@ -184,16 +194,55 @@ function displayRecipeResults(meals) {
     div.className = "recipe-card";
 
     div.innerHTML = `
-      <h4>${meal.strMeal}</h4>
-      <img src="${meal.strMealThumb}" alt="${meal.strMeal}" width="120">
-      <button onclick="selectRecipe('${meal.strMeal.replace(/'/g, "\\'")}')">
-        Add to Meal Plan
-      </button>
-    `;
+  <h4>${meal.strMeal}</h4>
+  <img 
+      src="${meal.strMealThumb}" 
+      alt="${meal.strMeal}" 
+      width="120"
+      class="recipe-thumb"
+      onclick="showRecipeDetails('${meal.idMeal}')"
+      style="cursor:pointer"
+  >
+  <button onclick="selectRecipe('${meal.strMeal.replace(/'/g, "\\'")}')">
+      Add to Meal Plan
+  </button>
+`;
+
 
     resultsDiv.appendChild(div);
   });
 }
+// Fetch full recipe details and open modal
+async function showRecipeDetails(idMeal) {
+    try {
+        const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`);
+        const data = await res.json();
+        const meal = data.meals[0];
+
+        // Build ingredients list
+        const ingredients = [];
+        for (let i = 1; i <= 20; i++) {
+            const ing = meal[`strIngredient${i}`];
+            const measure = meal[`strMeasure${i}`];
+            if (ing && ing.trim()) ingredients.push(`${ing} - ${measure}`);
+        }
+
+        recipeModalContent.innerHTML = `
+            <h2>${meal.strMeal}</h2>
+            <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
+            <h3>Ingredients</h3>
+            <ul>${ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
+            <h3>Instructions</h3>
+            <p>${meal.strInstructions}</p>
+        `;
+
+        recipeModal.style.display = "block";
+
+    } catch (error) {
+        alert("Error loading recipe details.");
+    }
+}
+
 function selectRecipe(recipeName) {
     const type = mealTypeSelect.value;  // Breakfast / Lunch / Dinner / Snack
 
@@ -223,6 +272,7 @@ if (clearResultsBtn) {
     if (recipeResultsDiv) recipeResultsDiv.innerHTML = "";
   });
 }
+
 
 
 
