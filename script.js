@@ -209,8 +209,6 @@ function selectRecipe(recipeName) {
     alert(`Added "${recipeName}" to your ${type} list!`);
 }
 
-// safe reference to the results container
-const recipeResultsDiv = document.getElementById("recipe-results");
 
 // attach listener in a safe way
 const clearResultsBtn = document.getElementById("clearResultsBtn");
@@ -225,6 +223,7 @@ if (clearResultsBtn) {
     if (recipeResultsDiv) recipeResultsDiv.innerHTML = "";
   });
 }
+
 
 
 
