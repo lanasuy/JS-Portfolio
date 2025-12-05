@@ -39,3 +39,42 @@ button.danger {
     color: white;
     margin-top: 20px;
 }
+
+#recipe-results {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.recipe-card {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 6px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e3e3e3;
+}
+
+.recipe-card img {
+  width: 60px;
+  height: 60px;
+  border-radius: 6px;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.recipe-card h4 {
+  margin: 0;
+  font-size: 15px;
+  flex-grow: 1;
+}
+
+.recipe-card button {
+  margin-left: 10px;
+  padding: 5px 8px;
+}
