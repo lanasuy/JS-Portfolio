@@ -170,5 +170,35 @@ async function searchRecipes() {
   }
 }
 
+function displayRecipeResults(meals) {
+  const resultsDiv = document.getElementById("recipe-results");
+  resultsDiv.innerHTML = "";
+
+  meals.forEach(meal => {
+    const div = document.createElement("div");
+    div.className = "recipe-card";
+
+    div.innerHTML = `
+      <h4>${meal.strMeal}</h4>
+      <img src="${meal.strMealThumb}" alt="${meal.strMeal}" width="120">
+      <button onclick="selectRecipe('${meal.strMeal.replace(/'/g, "\\'")}')">
+        Add to Meal Plan
+      </button>
+    `;
+
+    resultsDiv.appendChild(div);
+  });
+}
+function selectRecipe(recipeName) {
+  // Find active edit input
+  const activeInput = document.querySelector(".edit-input");
+
+  if (activeInput) {
+    activeInput.value = recipeName;
+  }
+
+  alert(`Added "${recipeName}" to the editing field. Click Save to confirm.`);
+}
+
 
 
