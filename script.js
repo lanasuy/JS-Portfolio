@@ -101,7 +101,9 @@ function deleteMeal(type, id) {
 
 // Edit mode
 function enterEditMode(type, meal, spanElement, editBtn, originalHandler) {
+    document.querySelectorAll(".edit-input").forEach(el => el.classList.remove("edit-input"));
     const input = document.createElement("input");
+    input.classList.add("edit-input");
     input.value = meal.name;
     input.style.marginRight = "8px";
 
@@ -199,6 +201,7 @@ function selectRecipe(recipeName) {
 
   alert(`Added "${recipeName}" to the editing field. Click Save to confirm.`);
 }
+
 
 
 
