@@ -1,5 +1,5 @@
-// Storage structure:
-// { Breakfast: [], Lunch: [], Dinner: [], Snack: [] }
+// Structure example:
+// { Breakfast: [{id: 1, name: "Eggs"}], Lunch: [], Dinner: [], Snack: [] }
 
 let mealPlan = JSON.parse(localStorage.getItem("mealPlan")) || {
     Breakfast: [],
@@ -14,7 +14,11 @@ const addMealBtn = document.getElementById("addMealBtn");
 const mealList = document.getElementById("mealList");
 const clearBtn = document.getElementById("clearBtn");
 
-// Render the meals on screen
+function savePlan() {
+    localStorage.setItem("mealPlan", JSON.stringify(mealPlan));
+}
+
+// Render meals on screen
 function renderMeals() {
     mealList.innerHTML = "";
 
@@ -27,14 +31,35 @@ function renderMeals() {
 
             const title = document.createElement("h3");
             title.textContent = type;
-
             groupDiv.appendChild(title);
 
             meals.forEach(meal => {
-                const item = document.createElement("div");
-                item.classList.add("meal-item");
-                item.textContent = "• " + meal;
-                groupDiv.appendChild(item);
+                const itemDiv = document.createElement("div");
+                itemDiv.classList.add("meal-item");
+
+                // Meal text
+                const mealNameSpan = document.createElement("span");
+                mealNameSpan.textContent = "• " + meal.name + " ";
+                itemDiv.appendChild(mealNameSpan);
+
+                // --- Edit button ---
+                const editBtn = document.createElement("button");
+                editBtn.textContent = "Edit";
+                editBtn.style.marginRight = "8px";
+                editBtn.addEventListener("click", () => {
+                    enterEditMode(type, meal, mealNameSpan, editBtn);
+                });
+                itemDiv.appendChild(editBtn);
+
+                // --- Delete button ---
+                const deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "Delete";
+                deleteBtn.addEventListener("click", () => {
+                    deleteMeal(type, meal.id);
+                });
+                itemDiv.appendChild(deleteBtn);
+
+                groupDiv.appendChild(itemDiv);
             });
 
             mealList.appendChild(groupDiv);
@@ -42,27 +67,55 @@ function renderMeals() {
     }
 }
 
-// Add a meal
+// Add meal
 addMealBtn.addEventListener("click", () => {
     const type = mealTypeSelect.value;
-    const meal = mealInput.value.trim();
+    const name = mealInput.value.trim();
 
-    if (meal === "") return;
+    if (!name) return;
 
-    mealPlan[type].push(meal);
+    const mealObj = {
+        id: Date.now(),
+        name: name
+    };
 
-    localStorage.setItem("mealPlan", JSON.stringify(mealPlan));
+    mealPlan[type].push(mealObj);
+    savePlan();
 
     mealInput.value = "";
     renderMeals();
 });
 
-// Clear all meals
+// Delete meal
+function deleteMeal(type, id) {
+    mealPlan[type] = mealPlan[type].filter(m => m.id !== id);
+    savePlan();
+    renderMeals();
+}
+
+// Edit mode
+function enterEditMode(type, meal, spanElement, editBtn) {
+    const input = document.createElement("input");
+    input.value = meal.name;
+    input.style.marginRight = "8px";
+
+    // Replace text with input
+    spanElement.replaceWith(input);
+
+    // Switch button to Save
+    editBtn.textContent = "Save";
+    editBtn.onclick = () => {
+        meal.name = input.value.trim();
+        savePlan();
+        renderMeals();
+    };
+}
+
 clearBtn.addEventListener("click", () => {
     if (!confirm("Are you sure you want to clear the whole plan?")) return;
 
     mealPlan = { Breakfast: [], Lunch: [], Dinner: [], Snack: [] };
-    localStorage.setItem("mealPlan", JSON.stringify(mealPlan));
+    savePlan();
     renderMeals();
 });
 
