@@ -9,6 +9,15 @@
 <body>
     <h1>Meal Planner</h1>
 
+    
+    <div class="recipe-search">
+  <h3>Search Recipes</h3>
+  <input type="text" id="recipe-search-input" placeholder="Search for a recipe...">
+  <button onclick="searchRecipes()">Search</button>
+
+  <div id="recipe-results"></div>
+</div>
+
     <div class="input-section">
         <select id="mealType">
             <option value="Breakfast">Breakfast</option>
@@ -35,3 +44,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
