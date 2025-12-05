@@ -267,11 +267,17 @@ if (searchBtn) {
     searchBtn.addEventListener("click", searchRecipes);
 }
 
+// Expose modal + recipe selector functions to HTML onclick
+window.showRecipeDetails = showRecipeDetails;
+window.selectRecipe = selectRecipe;
+
+
 if (clearResultsBtn) {
   clearResultsBtn.addEventListener("click", () => {
     if (recipeResultsDiv) recipeResultsDiv.innerHTML = "";
   });
 }
+
 
 
 
