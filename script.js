@@ -46,10 +46,16 @@ function renderMeals() {
                 const editBtn = document.createElement("button");
                 editBtn.textContent = "Edit";
                 editBtn.style.marginRight = "8px";
-                editBtn.addEventListener("click", () => {
-                    enterEditMode(type, meal, mealNameSpan, editBtn);
-                });
+
+                // We will define the handler separately so we can remove it later
+                function handleEditClick() {
+                    enterEditMode(type, meal, mealNameSpan, editBtn, handleEditClick);
+                }
+
+                editBtn.addEventListener("click", handleEditClick);
+
                 itemDiv.appendChild(editBtn);
+
 
                 // --- Delete button ---
                 const deleteBtn = document.createElement("button");
@@ -94,29 +100,36 @@ function deleteMeal(type, id) {
 }
 
 // Edit mode
-function enterEditMode(type, meal, spanElement, editBtn) {
+function enterEditMode(type, meal, spanElement, editBtn, originalHandler) {
     const input = document.createElement("input");
     input.value = meal.name;
     input.style.marginRight = "8px";
 
-    // Replace the span with the input
+    // Replace span with input
     spanElement.replaceWith(input);
 
-    // Change Edit → Save
+    // Remove the edit listener so it doesn't fire again
+    editBtn.removeEventListener("click", originalHandler);
+
+    // Switch button text to Save
     editBtn.textContent = "Save";
 
-    // Remove old event listener by replacing onclick
     editBtn.onclick = () => {
         const newName = input.value.trim();
         if (!newName) return;
 
-        // Update the object
         meal.name = newName;
-
         savePlan();
+
+        // After saving, restore original behavior
+        editBtn.onclick = null; // clear save
+        editBtn.textContent = "Edit";
+        editBtn.addEventListener("click", originalHandler);
+
         renderMeals();
     };
 }
+
 
 
 clearBtn.addEventListener("click", () => {
@@ -129,4 +142,5 @@ clearBtn.addEventListener("click", () => {
 
 // Initial render
 renderMeals();
+
 
