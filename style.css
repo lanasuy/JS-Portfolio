@@ -1,0 +1,41 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #fafafa;
+}
+
+.input-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#mealList {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.meal-group {
+    margin-bottom: 15px;
+}
+
+.meal-group h3 {
+    margin-bottom: 5px;
+}
+
+.meal-item {
+    margin-left: 20px;
+}
+
+button {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+button.danger {
+    background-color: crimson;
+    color: white;
+    margin-top: 20px;
+}
