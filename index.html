@@ -16,12 +16,26 @@
     <!-- Meal Planner Section -->
     <section id="planner">
       <h2>Your Weekly Meal Plan</h2>
+      <!-- Add Meal UI -->
+<div id="manual-add">
+  <select id="mealType">
+    <option value="Breakfast">Breakfast</option>
+    <option value="Lunch">Lunch</option>
+    <option value="Dinner">Dinner</option>
+    <option value="Snack">Snack</option>
+  </select>
+
+  <input type="text" id="mealInput" placeholder="Add a custom meal...">
+
+  <button id="addMealBtn">Add Meal</button>
+</div>
 
       <div id="meal-plan">
         <!-- JS will inject the meal plan table -->
       </div>
 
-      <button id="clear-plan-btn">Clear Meal Plan</button>
+      <button id="clearBtn">Clear Meal Plan</button>
+
     </section>
 
     <!-- Recipe Search Section -->
@@ -58,3 +72,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
