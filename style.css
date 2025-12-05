@@ -1,119 +1,136 @@
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
-    background-color: #fafafa;
+    background: #f8f8f8;
 }
 
-.input-section {
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+#container {
     display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 30px;
 }
 
-#mealList {
+/* LEFT: Meal Plan */
+#meal-plan-section,
+#recipe-search-section {
     background: white;
-    padding: 15px;
-    border-radius: 8px;
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.meal-group {
+.input-row {
+    display: flex;
+    gap: 10px;
     margin-bottom: 15px;
 }
 
-.meal-group h3 {
-    margin-bottom: 5px;
-}
-
-.meal-item {
-    margin-left: 20px;
+input, select {
+    padding: 8px;
+    flex: 1;
 }
 
 button {
     padding: 8px 12px;
     cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background: #3498db;
+    color: white;
+}
+
+button.secondary {
+    background: #7f8c8d;
 }
 
 button.danger {
-    background-color: crimson;
-    color: white;
-    margin-top: 20px;
+    background: #e74c3c;
+    margin-bottom: 15px;
 }
 
+.meal-group {
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #f2f2f2;
+    border-radius: 6px;
+}
+
+.meal-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* --- Recipe Results Grid --- */
 #recipe-results {
-  max-height: 300px;
-  overflow-y: auto;
-  margin-top: 10px;
-  border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 6px;
-  background: #fafafa;
+    margin-top: 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
 }
 
 .recipe-card {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  padding: 6px;
-  background: white;
-  border-radius: 6px;
-  border: 1px solid #e3e3e3;
-}
-
-.recipe-card img {
-  width: 60px;
-  height: 60px;
-  border-radius: 6px;
-  margin-right: 10px;
-  object-fit: cover;
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .recipe-card h4 {
-  margin: 0;
-  font-size: 15px;
-  flex-grow: 1;
+    font-size: 14px;
+    min-height: 38px;
 }
 
-.recipe-card button {
-  margin-left: 10px;
-  padding: 5px 8px;
+.recipe-thumb {
+    width: 100%;
+    border-radius: 6px;
+    margin: 8px 0;
+    transition: transform 0.2s;
 }
+
+.recipe-thumb:hover {
+    transform: scale(1.05);
+}
+
+/* --- Modal --- */
 .modal {
+    display: none;
     position: fixed;
-    top: 0;
     left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: flex;
+    background-color: rgba(0,0,0,0.6);
     justify-content: center;
     align-items: center;
-    z-index: 999;
-}
-
-.modal.hidden {
-    display: none;
 }
 
 .modal-content {
     background: white;
-    max-width: 500px;
-    width: 90%;
+    width: 60%;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 12px;
     max-height: 90%;
     overflow-y: auto;
 }
 
 .close {
+    font-size: 30px;
     float: right;
-    font-size: 24px;
     cursor: pointer;
 }
 
-.modal-img {
+#recipeModalContent img {
     width: 100%;
-    border-radius: 6px;
-    margin-bottom: 10px;
+    border-radius: 8px;
 }
 
+ul {
+    padding-left: 20px;
+}
