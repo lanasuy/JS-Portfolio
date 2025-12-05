@@ -1,290 +1,382 @@
-// Structure example:
-// { Breakfast: [{id: 1, name: "Eggs"}], Lunch: [], Dinner: [], Snack: [] }
 
-let mealPlan = JSON.parse(localStorage.getItem("mealPlan")) || {
+document.addEventListener("DOMContentLoaded", () => {
+  // ---------- Config & Data ----------
+  const STORAGE_KEY = "mealPlan";
+  let mealPlan = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
     Breakfast: [],
     Lunch: [],
     Dinner: [],
     Snack: []
-};
+  };
 
-const mealTypeSelect = document.getElementById("mealType");
-const mealInput = document.getElementById("mealInput");
-const addMealBtn = document.getElementById("addMealBtn");
-const mealList = document.getElementById("mealList");
-const clearBtn = document.getElementById("clearBtn");
-// Modal elements for recipe details
-const recipeModal = document.getElementById("recipeModal");
-const recipeModalContent = document.getElementById("recipeModalContent");
-const recipeModalClose = document.getElementById("recipeModalClose");
+  // ---------- Cached DOM ----------
+  const mealTypeSelect = document.getElementById("mealType");
+  const mealInput = document.getElementById("mealInput");
+  const addMealBtn = document.getElementById("addMealBtn");
+  const mealList = document.getElementById("mealList");
+  const clearBtn = document.getElementById("clearBtn");
 
-if (recipeModalClose) {
-    recipeModalClose.addEventListener("click", () => {
-        recipeModal.style.display = "none";
+  // Recipe search controls
+  const searchInput = document.getElementById("recipe-search-input");
+  const searchBtn = document.getElementById("searchBtn");
+  const clearResultsBtn = document.getElementById("clearResultsBtn");
+  const resultsDiv = document.getElementById("recipe-results");
+
+  // Modal controls
+  const recipeModal = document.getElementById("recipeModal");
+  const recipeModalContent = document.getElementById("recipeModalContent");
+  const recipeModalClose = document.getElementById("recipeModalClose");
+
+  // Small reusable toast (non-blocking)
+  function showToast(text, duration = 1800) {
+    let toast = document.createElement("div");
+    toast.className = "mini-toast";
+    toast.textContent = text;
+    Object.assign(toast.style, {
+      position: "fixed",
+      bottom: "20px",
+      left: "50%",
+      transform: "translateX(-50%)",
+      background: "#222",
+      color: "#fff",
+      padding: "8px 12px",
+      borderRadius: "6px",
+      zIndex: 9999,
+      opacity: "0",
+      transition: "opacity 180ms ease"
     });
-}
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => (toast.style.opacity = "1"));
+    setTimeout(() => {
+      toast.style.opacity = "0";
+      setTimeout(() => toast.remove(), 200);
+    }, duration);
+  }
 
-function savePlan() {
-    localStorage.setItem("mealPlan", JSON.stringify(mealPlan));
-}
+  // ---------- Persistence ----------
+  function savePlan() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(mealPlan));
+  }
 
-// Render meals on screen
-function renderMeals() {
+  // ---------- Rendering ----------
+  function renderMeals() {
     mealList.innerHTML = "";
 
-    for (let type in mealPlan) {
-        const meals = mealPlan[type];
+    for (const type of Object.keys(mealPlan)) {
+      const items = mealPlan[type];
+      const group = document.createElement("section");
+      group.className = "meal-group";
 
-        if (meals.length > 0) {
-            const groupDiv = document.createElement("div");
-            groupDiv.classList.add("meal-group");
+      const header = document.createElement("div");
+      header.className = "meal-group-header";
+      const title = document.createElement("h3");
+      title.textContent = type;
+      title.className = "meal-group-title";
+      header.appendChild(title);
 
-            const title = document.createElement("h3");
-            title.textContent = type;
-            groupDiv.appendChild(title);
+      // optional small count
+      const count = document.createElement("span");
+      count.className = "meal-count";
+      count.textContent = ` (${items.length})`;
+      title.appendChild(count);
 
-            meals.forEach(meal => {
-                const itemDiv = document.createElement("div");
-                itemDiv.classList.add("meal-item");
+      group.appendChild(header);
 
-                // Meal text
-                const mealNameSpan = document.createElement("span");
-                mealNameSpan.textContent = "• " + meal.name + " ";
-                itemDiv.appendChild(mealNameSpan);
+      const list = document.createElement("div");
+      list.className = "meal-items";
 
-                // --- Edit button ---
-                const editBtn = document.createElement("button");
-                editBtn.textContent = "Edit";
-                editBtn.style.marginRight = "8px";
+      items.forEach(meal => {
+        const row = document.createElement("div");
+        row.className = "meal-item";
+        row.dataset.id = meal.id;
 
-                // We will define the handler separately so we can remove it later
-                function handleEditClick() {
-                    enterEditMode(type, meal, mealNameSpan, editBtn, handleEditClick);
-                }
+        const textSpan = document.createElement("span");
+        textSpan.className = "meal-text";
+        textSpan.textContent = meal.name;
 
-                editBtn.addEventListener("click", handleEditClick);
+        // Edit button
+        const editBtn = document.createElement("button");
+        editBtn.className = "btn small";
+        editBtn.textContent = "Edit";
+        editBtn.addEventListener("click", () => enterEditMode(type, meal, row, textSpan));
 
-                itemDiv.appendChild(editBtn);
+        // Delete button
+        const delBtn = document.createElement("button");
+        delBtn.className = "btn small danger";
+        delBtn.textContent = "Delete";
+        delBtn.addEventListener("click", () => {
+          deleteMeal(type, meal.id);
+          showToast("Meal deleted");
+        });
 
+        row.appendChild(textSpan);
+        row.appendChild(editBtn);
+        row.appendChild(delBtn);
 
-                // --- Delete button ---
-                const deleteBtn = document.createElement("button");
-                deleteBtn.textContent = "Delete";
-                deleteBtn.addEventListener("click", () => {
-                    deleteMeal(type, meal.id);
-                });
-                itemDiv.appendChild(deleteBtn);
+        list.appendChild(row);
+      });
 
-                groupDiv.appendChild(itemDiv);
-            });
+      // If no items, show hint
+      if (items.length === 0) {
+        const hint = document.createElement("div");
+        hint.className = "empty-hint";
+        hint.textContent = "No meals yet — add or search recipes!";
+        list.appendChild(hint);
+      }
 
-            mealList.appendChild(groupDiv);
-        }
+      group.appendChild(list);
+      mealList.appendChild(group);
     }
-}
+  }
 
-// Add meal
-addMealBtn.addEventListener("click", () => {
+  // ---------- Meal CRUD ----------
+  addMealBtn.addEventListener("click", () => {
     const type = mealTypeSelect.value;
     const name = mealInput.value.trim();
+    if (!name) return showToast("Enter a meal name");
 
-    if (!name) return;
-
-    const mealObj = {
-        id: Date.now(),
-        name: name
-    };
-
+    const mealObj = { id: Date.now().toString(), name };
     mealPlan[type].push(mealObj);
     savePlan();
-
     mealInput.value = "";
     renderMeals();
-});
+    showToast("Meal added");
+  });
 
-// Delete meal
-function deleteMeal(type, id) {
+  function deleteMeal(type, id) {
     mealPlan[type] = mealPlan[type].filter(m => m.id !== id);
     savePlan();
     renderMeals();
-}
+  }
 
-// Edit mode
-function enterEditMode(type, meal, spanElement, editBtn, originalHandler) {
-    document.querySelectorAll(".edit-input").forEach(el => el.classList.remove("edit-input"));
+  function enterEditMode(type, meal, rowElement, textSpan) {
+    // If an edit input already exists elsewhere, cancel it first
+    const existing = document.querySelector(".edit-input");
+    if (existing) {
+      existing.replaceWith(document.createTextNode(existing.value || ""));
+    }
+
     const input = document.createElement("input");
-    input.classList.add("edit-input");
+    input.type = "text";
     input.value = meal.name;
+    input.className = "edit-input";
     input.style.marginRight = "8px";
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter") saveEdit();
+      if (e.key === "Escape") cancelEdit();
+    });
 
-    // Replace span with input
-    spanElement.replaceWith(input);
+    function saveEdit() {
+      const val = input.value.trim();
+      if (!val) return showToast("Name cannot be empty");
+      meal.name = val;
+      savePlan();
+      renderMeals();
+      showToast("Saved");
+    }
 
-    // Remove the edit listener so it doesn't fire again
-    editBtn.removeEventListener("click", originalHandler);
+    function cancelEdit() {
+      renderMeals();
+    }
 
-    // Switch button text to Save
-    editBtn.textContent = "Save";
+    // Replace text with input and focus
+    rowElement.replaceChild(input, textSpan);
+    input.focus();
+    // Replace edit button behaviour with save
+    const editBtn = rowElement.querySelector("button");
+    if (editBtn) {
+      editBtn.textContent = "Save";
+      // temporary handler
+      const saveHandler = () => saveEdit();
+      editBtn.replaceWith(editBtn.cloneNode(true));
+      const newEditBtn = rowElement.querySelector("button");
+      newEditBtn.textContent = "Save";
+      newEditBtn.className = "btn small";
+      newEditBtn.addEventListener("click", saveHandler);
+    }
+  }
 
-    editBtn.onclick = () => {
-        const newName = input.value.trim();
-        if (!newName) return;
-
-        meal.name = newName;
-        savePlan();
-
-        // After saving, restore original behavior
-        editBtn.onclick = null; // clear save
-        editBtn.textContent = "Edit";
-        editBtn.addEventListener("click", originalHandler);
-
-        renderMeals();
-    };
-}
-
-
-
-clearBtn.addEventListener("click", () => {
+  // ---------- Clear Plan ----------
+  clearBtn.addEventListener("click", () => {
     if (!confirm("Are you sure you want to clear the whole plan?")) return;
-
     mealPlan = { Breakfast: [], Lunch: [], Dinner: [], Snack: [] };
     savePlan();
     renderMeals();
+    clearResults();
+    showToast("Plan cleared");
+  });
 
-    document.getElementById("recipe-results").innerHTML = "";
-
-});
-
-// Initial render
-renderMeals();
-
-async function searchRecipes() {
-  const query = document.getElementById("recipe-search-input").value.trim();
-  const resultsDiv = document.getElementById("recipe-results");
-
-  if (!query) {
-    resultsDiv.innerHTML = "<p>Please enter a search term.</p>";
-    return;
-  }
-
-  resultsDiv.innerHTML = "<p>Searching...</p>";
-
-  try {
-    const res = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query)}`);
-    const data = await res.json();
-
-    if (!data.meals) {
-      resultsDiv.innerHTML = "<p>No recipes found.</p>";
+  // ---------- Recipe Search (TheMealDB) ----------
+  async function searchRecipes() {
+    const q = (searchInput.value || "").trim();
+    if (!q) {
+      resultsDiv.innerHTML = `<p class="muted">Please enter a search term.</p>`;
       return;
     }
+    resultsDiv.innerHTML = `<p class="muted">Searching...</p>`;
 
-    displayRecipeResults(data.meals);
-    
-  } catch (error) {
-    resultsDiv.innerHTML = "<p>Error fetching recipes.</p>";
-  }
-}
-
-function displayRecipeResults(meals) {
-  const resultsDiv = document.getElementById("recipe-results");
-  resultsDiv.innerHTML = "";
-
-  meals.forEach(meal => {
-    const div = document.createElement("div");
-    div.className = "recipe-card";
-
-    div.innerHTML = `
-  <h4>${meal.strMeal}</h4>
-  <img 
-      src="${meal.strMealThumb}" 
-      alt="${meal.strMeal}" 
-      width="120"
-      class="recipe-thumb"
-      onclick="showRecipeDetails('${meal.idMeal}')"
-      style="cursor:pointer"
-  >
-  <button onclick="selectRecipe('${meal.strMeal.replace(/'/g, "\\'")}')">
-      Add to Meal Plan
-  </button>
-`;
-
-
-    resultsDiv.appendChild(div);
-  });
-}
-// Fetch full recipe details and open modal
-async function showRecipeDetails(idMeal) {
     try {
-        const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`);
-        const data = await res.json();
-        const meal = data.meals[0];
-
-        // Build ingredients list
-        const ingredients = [];
-        for (let i = 1; i <= 20; i++) {
-            const ing = meal[`strIngredient${i}`];
-            const measure = meal[`strMeasure${i}`];
-            if (ing && ing.trim()) ingredients.push(`${ing} - ${measure}`);
-        }
-
-        recipeModalContent.innerHTML = `
-            <h2>${meal.strMeal}</h2>
-            <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
-            <h3>Ingredients</h3>
-            <ul>${ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
-            <h3>Instructions</h3>
-            <p>${meal.strInstructions}</p>
-        `;
-
-        recipeModal.style.display = "block";
-
-    } catch (error) {
-        alert("Error loading recipe details.");
+      const res = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(q)}`);
+      const data = await res.json();
+      if (!data.meals) {
+        resultsDiv.innerHTML = `<p class="muted">No recipes found.</p>`;
+        return;
+      }
+      displayRecipeResults(data.meals);
+    } catch (err) {
+      console.error(err);
+      resultsDiv.innerHTML = `<p class="muted">Error fetching recipes.</p>`;
     }
-}
+  }
 
-function selectRecipe(recipeName) {
-    const type = mealTypeSelect.value;  // Breakfast / Lunch / Dinner / Snack
+  function displayRecipeResults(meals) {
+    resultsDiv.innerHTML = "";
+    // container fixed height with scroll handled in CSS
+    meals.forEach(meal => {
+      const card = document.createElement("div");
+      card.className = "recipe-card";
 
-    const mealObj = {
-        id: Date.now(),
-        name: recipeName
-    };
+      const thumb = document.createElement("img");
+      thumb.className = "recipe-thumb";
+      thumb.src = meal.strMealThumb;
+      thumb.alt = meal.strMeal;
+      thumb.width = 90;
+      thumb.height = 90;
+      thumb.style.objectFit = "cover";
+      thumb.style.borderRadius = "6px";
+      thumb.style.cursor = "pointer";
 
+      // clicking thumbnail opens modal with details
+      thumb.addEventListener("click", () => showRecipeDetails(meal.idMeal));
+
+      const title = document.createElement("div");
+      title.className = "recipe-title";
+      title.textContent = meal.strMeal;
+
+      const actions = document.createElement("div");
+      actions.className = "recipe-actions";
+
+      const addBtn = document.createElement("button");
+      addBtn.className = "btn small";
+      addBtn.textContent = "Add to Plan";
+      addBtn.addEventListener("click", () => {
+        selectRecipe(meal.strMeal);
+      });
+
+      actions.appendChild(addBtn);
+
+      card.appendChild(thumb);
+      card.appendChild(title);
+      card.appendChild(actions);
+
+      resultsDiv.appendChild(card);
+    });
+  }
+
+  function clearResults() {
+    resultsDiv.innerHTML = "";
+  }
+
+  // Wire search + clear results buttons
+  if (searchBtn) searchBtn.addEventListener("click", searchRecipes);
+  if (clearResultsBtn) clearResultsBtn.addEventListener("click", () => {
+    clearResults();
+    showToast("Results cleared");
+  });
+
+  // ---------- Recipe Details Modal ----------
+  async function showRecipeDetails(idMeal) {
+    try {
+      recipeModalContent.innerHTML = `<p class="muted">Loading...</p>`;
+      recipeModal.style.display = "flex";
+
+      const res = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${idMeal}`);
+      const data = await res.json();
+      const meal = data.meals && data.meals[0];
+      if (!meal) {
+        recipeModalContent.innerHTML = `<p class="muted">Could not load recipe details.</p>`;
+        return;
+      }
+
+      // build ingredients list
+      const ingredients = [];
+      for (let i = 1; i <= 20; i++) {
+        const name = meal[`strIngredient${i}`];
+        const measure = meal[`strMeasure${i}`];
+        if (name && name.trim()) ingredients.push(`${name.trim()} — ${measure ? measure.trim() : ""}`);
+      }
+
+      // modal content with add-to-plan button
+      recipeModalContent.innerHTML = `
+        <div class="modal-header">
+          <h2 class="modal-title">${escapeHtml(meal.strMeal)}</h2>
+        </div>
+        <img class="modal-thumb" src="${meal.strMealThumb}" alt="${escapeHtml(meal.strMeal)}">
+        <div class="modal-nutrition" id="modal-nutrition"></div>
+        <h3>Ingredients</h3>
+        <ul class="modal-ingredients">
+          ${ingredients.map(it => `<li>${escapeHtml(it)}</li>`).join("")}
+        </ul>
+        <h3>Instructions</h3>
+        <p class="modal-instructions">${escapeHtml(meal.strInstructions)}</p>
+        <div style="margin-top:12px;">
+          <button id="modal-add-to-plan" class="btn">Add to selected category</button>
+          <button id="modal-close-btn" class="btn small">Close</button>
+        </div>
+      `;
+
+      // hook modal buttons
+      const modalAddBtn = document.getElementById("modal-add-to-plan");
+      const modalCloseBtn = document.getElementById("modal-close-btn");
+
+      modalAddBtn.addEventListener("click", () => {
+        selectRecipe(meal.strMeal);
+        showToast(`Added "${meal.strMeal}" to ${mealTypeSelect.value}`);
+      });
+
+      modalCloseBtn.addEventListener("click", () => {
+        recipeModal.style.display = "none";
+      });
+
+      // clicking outside modal content closes it
+      // (window onclick below handles it too)
+    } catch (err) {
+      console.error("showRecipeDetails error:", err);
+      recipeModalContent.innerHTML = `<p class="muted">Error loading recipe details.</p>`;
+    }
+  }
+
+  // Close modal icons/overlay
+  if (recipeModalClose) {
+    recipeModalClose.addEventListener("click", () => (recipeModal.style.display = "none"));
+  }
+  window.addEventListener("click", (ev) => {
+    if (ev.target === recipeModal) recipeModal.style.display = "none";
+  });
+
+  // ---------- Add recipe to plan ----------
+  function selectRecipe(recipeName) {
+    const type = mealTypeSelect.value || "Breakfast";
+    const mealObj = { id: Date.now().toString(), name: recipeName };
     mealPlan[type].push(mealObj);
     savePlan();
     renderMeals();
+  }
 
-    alert(`Added "${recipeName}" to your ${type} list!`);
-}
+  // ---------- Utilities ----------
+  function escapeHtml(unsafe) {
+    if (!unsafe && unsafe !== 0) return "";
+    return String(unsafe)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 
+  // ---------- Initial Render ----------
+  renderMeals();
 
-// attach listener in a safe way
-const clearResultsBtn = document.getElementById("clearResultsBtn");
-const recipeResultsDiv = document.getElementById("recipe-results");
-const searchBtn = document.getElementById("searchBtn");
-if (searchBtn) {
-    searchBtn.addEventListener("click", searchRecipes);
-}
-
-// Expose modal + recipe selector functions to HTML onclick
-window.showRecipeDetails = showRecipeDetails;
-window.selectRecipe = selectRecipe;
-
-
-if (clearResultsBtn) {
-  clearResultsBtn.addEventListener("click", () => {
-    if (recipeResultsDiv) recipeResultsDiv.innerHTML = "";
-  });
-}
-
-
-
-
-
-
-
-
-
-
-
+  // expose debug helpers only in dev if needed:
+  // window._mealPlan = mealPlan;
+});
