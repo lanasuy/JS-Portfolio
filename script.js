@@ -140,6 +140,9 @@ clearBtn.addEventListener("click", () => {
     mealPlan = { Breakfast: [], Lunch: [], Dinner: [], Snack: [] };
     savePlan();
     renderMeals();
+
+    document.getElementById("recipe-results").innerHTML = "";
+
 });
 
 // Initial render
@@ -205,6 +208,7 @@ function selectRecipe(recipeName) {
 
     alert(`Added "${recipeName}" to your ${type} list!`);
 }
+
 
 
 
