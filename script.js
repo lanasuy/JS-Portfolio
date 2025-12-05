@@ -214,13 +214,14 @@ const recipeResultsDiv = document.getElementById("recipe-results");
 
 // attach listener in a safe way
 const clearResultsBtn = document.getElementById("clearResultsBtn");
+const recipeResultsDiv = document.getElementById("recipe-results");
+
 if (clearResultsBtn) {
   clearResultsBtn.addEventListener("click", () => {
-    if (recipeResultsDiv) {
-      recipeResultsDiv.innerHTML = "";
-    }
+    if (recipeResultsDiv) recipeResultsDiv.innerHTML = "";
   });
 }
+
 
 
 
