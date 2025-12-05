@@ -99,17 +99,25 @@ function enterEditMode(type, meal, spanElement, editBtn) {
     input.value = meal.name;
     input.style.marginRight = "8px";
 
-    // Replace text with input
+    // Replace the span with the input
     spanElement.replaceWith(input);
 
-    // Switch button to Save
+    // Change Edit → Save
     editBtn.textContent = "Save";
+
+    // Remove old event listener by replacing onclick
     editBtn.onclick = () => {
-        meal.name = input.value.trim();
+        const newName = input.value.trim();
+        if (!newName) return;
+
+        // Update the object
+        meal.name = newName;
+
         savePlan();
         renderMeals();
     };
 }
+
 
 clearBtn.addEventListener("click", () => {
     if (!confirm("Are you sure you want to clear the whole plan?")) return;
@@ -121,3 +129,4 @@ clearBtn.addEventListener("click", () => {
 
 // Initial render
 renderMeals();
+
