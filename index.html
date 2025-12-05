@@ -1,59 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meal Planner</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Meal Planner</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
+  <header>
     <h1>Meal Planner</h1>
+  </header>
 
-    <div class="container">
+  <main>
 
-        <!-- Left: Meal Plan -->
-        <div class="meal-plan-section">
-            <h2>Your Meal Plan</h2>
+    <!-- Meal Planning Section -->
+    <section id="meal-planner">
+      <h2>Your Weekly Meal Plan</h2>
 
-            <div class="add-controls">
-                <select id="mealType">
-                    <option>Breakfast</option>
-                    <option>Lunch</option>
-                    <option>Dinner</option>
-                    <option>Snack</option>
-                </select>
-                <input id="mealInput" placeholder="Add custom meal">
-                <button id="addMealBtn">Add</button>
-                <button id="clearBtn" class="danger">Clear All</button>
-            </div>
+      <div class="meal-add-row">
+        <select id="mealType">
+          <option value="Breakfast">Breakfast</option>
+          <option value="Lunch">Lunch</option>
+          <option value="Dinner">Dinner</option>
+          <option value="Snack">Snack</option>
+        </select>
 
-            <div id="mealList"></div>
-        </div>
+        <input id="mealInput" type="text" placeholder="Add a meal manually">
+        <button id="addMealBtn">Add</button>
+      </div>
 
-        <!-- Right: Recipe Search -->
-        <div class="recipe-section">
-            <h2>Find Recipes</h2>
+      <div id="mealList"></div>
 
-            <div class="search-controls">
-                <input id="recipe-search-input" placeholder="Search for a recipe...">
-                <button id="searchBtn">Search</button>
-                <button id="clearResultsBtn">Clear Results</button>
-            </div>
+      <button id="clearBtn" class="danger">Clear All Meals</button>
+    </section>
 
-            <div id="recipe-results"></div>
-        </div>
+    <!-- Recipe Search Section -->
+    <section id="recipe-search">
+      <h2>Find Recipes</h2>
 
+      <div class="search-controls">
+        <input type="text" id="recipe-search-input" placeholder="Search for recipes...">
+        <button id="searchBtn">Search</button>
+        <button id="clearResultsBtn">Clear Results</button>
+      </div>
+
+      <div id="recipe-results"></div>
+    </section>
+
+  </main>
+
+  <!-- Recipe Modal -->
+  <div id="recipeModal" class="modal">
+    <div class="modal-body" id="recipeModalContent">
+      <span id="recipeModalClose" class="close">&times;</span>
+      <!-- JS will fill content -->
     </div>
+  </div>
 
-    <!-- Recipe Modal -->
-    <div id="recipeModal" class="modal">
-        <div class="modal-content">
-            <span id="recipeModalClose" class="close">&times;</span>
-            <div id="recipeModalContent"></div>
-        </div>
-    </div>
+  <script src="script.js"></script>
 
-    <script src="script.js"></script>
 </body>
 </html>
