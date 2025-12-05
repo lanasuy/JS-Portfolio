@@ -215,12 +215,17 @@ const recipeResultsDiv = document.getElementById("recipe-results");
 // attach listener in a safe way
 const clearResultsBtn = document.getElementById("clearResultsBtn");
 const recipeResultsDiv = document.getElementById("recipe-results");
+const searchBtn = document.getElementById("searchBtn");
+if (searchBtn) {
+    searchBtn.addEventListener("click", searchRecipes);
+}
 
 if (clearResultsBtn) {
   clearResultsBtn.addEventListener("click", () => {
     if (recipeResultsDiv) recipeResultsDiv.innerHTML = "";
   });
 }
+
 
 
 
