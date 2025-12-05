@@ -1,75 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Meal Planner</title>
-    <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<title>Meal Planner</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Meal Planner</h1>
 
-    
-    <div class="recipe-search">
-  <h3>Search Recipes</h3>
-  <input type="text" id="recipe-search-input" placeholder="Search for a recipe...">
-  <button id="searchBtn" type="button">Search</button>
-  <button id="clearResultsBtn" type="button">Clear Results</button>
+<h1>Meal Planner</h1>
 
+<div id="container">
 
-  <div id="recipe-results"></div>
+    <!-- LEFT SIDE: MEAL PLAN -->
+    <section id="meal-plan-section">
+        <h2>Your Meal Plan</h2>
+
+        <div class="input-row">
+            <select id="mealType">
+                <option>Breakfast</option>
+                <option>Lunch</option>
+                <option>Dinner</option>
+                <option>Snack</option>
+            </select>
+
+            <input id="mealInput" placeholder="Add custom meal...">
+            <button id="addMealBtn">Add</button>
+        </div>
+
+        <button id="clearBtn" class="danger">Clear Entire Plan</button>
+
+        <div id="mealList"></div>
+    </section>
+
+    <!-- RIGHT SIDE: RECIPES -->
+    <section id="recipe-search-section">
+        <h2>Search Recipes</h2>
+
+        <div class="input-row">
+            <input id="recipe-search-input" placeholder="Search for a recipe...">
+            <button id="searchBtn">Search</button>
+            <button id="clearResultsBtn" class="secondary">Clear Results</button>
+        </div>
+
+        <div id="recipe-results"></div>
+    </section>
+
 </div>
 
-    <div class="input-section">
-        <select id="mealType">
-            <option value="Breakfast">Breakfast</option>
-            <option value="Lunch">Lunch</option>
-            <option value="Dinner">Dinner</option>
-            <option value="Snack">Snack</option>
-        </select>
-
-        <input 
-            type="text" 
-            id="mealInput" 
-            placeholder="Enter meal..."
-        />
-
-        <button id="addMealBtn">Add</button>
+<!-- MODAL FOR RECIPE DETAILS -->
+<div id="recipeModal" class="modal">
+    <div class="modal-content">
+        <span id="recipeModalClose" class="close">&times;</span>
+        <div id="recipeModalContent"></div>
     </div>
-
-    <h2>Today's Plan</h2>
-
-    <div id="mealList"></div>
-
-    <button id="clearBtn" class="danger">Clear Plan</button>
-
-    
-    
-    <!-- Recipe Details Modal -->
-<div id="recipe-modal" class="modal hidden">
-  <div class="modal-content">
-    <span id="close-modal" class="close">&times;</span>
-
-    <h2 id="modal-title"></h2>
-    <img id="modal-img" class="modal-img" />
-
-    <h3>Ingredients</h3>
-    <ul id="modal-ingredients"></ul>
-
-    <h3>Instructions</h3>
-    <p id="modal-instructions"></p>
-
-    <button id="modal-add-btn">Add to Selected Meal</button>
-  </div>
 </div>
-<script src="script.js" defer></script>
+
+<script src="script.js"></script>
 </body>
-</html>
-
-
-
-
-
-
-
-
+</htm
