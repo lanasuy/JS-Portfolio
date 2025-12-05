@@ -192,15 +192,20 @@ function displayRecipeResults(meals) {
   });
 }
 function selectRecipe(recipeName) {
-  // Find active edit input
-  const activeInput = document.querySelector(".edit-input");
+    const type = mealTypeSelect.value;  // Breakfast / Lunch / Dinner / Snack
 
-  if (activeInput) {
-    activeInput.value = recipeName;
-  }
+    const mealObj = {
+        id: Date.now(),
+        name: recipeName
+    };
 
-  alert(`Added "${recipeName}" to the editing field. Click Save to confirm.`);
+    mealPlan[type].push(mealObj);
+    savePlan();
+    renderMeals();
+
+    alert(`Added "${recipeName}" to your ${type} list!`);
 }
+
 
 
 
