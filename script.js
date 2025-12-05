@@ -143,4 +143,32 @@ clearBtn.addEventListener("click", () => {
 // Initial render
 renderMeals();
 
+async function searchRecipes() {
+  const query = document.getElementById("recipe-search-input").value.trim();
+  const resultsDiv = document.getElementById("recipe-results");
+
+  if (!query) {
+    resultsDiv.innerHTML = "<p>Please enter a search term.</p>";
+    return;
+  }
+
+  resultsDiv.innerHTML = "<p>Searching...</p>";
+
+  try {
+    const res = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query)}`);
+    const data = await res.json();
+
+    if (!data.meals) {
+      resultsDiv.innerHTML = "<p>No recipes found.</p>";
+      return;
+    }
+
+    displayRecipeResults(data.meals);
+    
+  } catch (error) {
+    resultsDiv.innerHTML = "<p>Error fetching recipes.</p>";
+  }
+}
+
+
 
