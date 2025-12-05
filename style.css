@@ -1,123 +1,153 @@
 body {
-    font-family: Arial, sans-serif;
-    background: #f2f4f7;
-    margin: 0;
-    padding: 20px;
+  font-family: Arial, sans-serif;
+  background: #fafafa;
+  margin: 0;
+  padding: 0;
 }
 
-h1 {
-    text-align: center;
+header {
+  background: #4CAF50;
+  padding: 15px;
+  color: white;
+  text-align: center;
 }
 
-.container {
-    display: flex;
-    gap: 20px;
+main {
+  display: flex;
+  padding: 20px;
+  gap: 25px;
 }
 
-/* Meal Plan Section */
-.meal-plan-section, 
-.recipe-section {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 50%;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+/* ------------ Left: Meal Planner ------------ */
+
+#meal-planner {
+  width: 45%;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
 }
 
-.add-controls, .search-controls {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
+.meal-add-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 #mealList .meal-group {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
+  background: #f2f2f2;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 .meal-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 6px 0;
 }
 
-button {
-    background: #1a73e8;
-    border: none;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #0d5fc2;
-}
-
-.danger {
-    background: #d9534f;
-}
-
-.danger:hover {
-    background: #b52b27;
-}
-
-/* Recipe Results */
-.recipe-card {
-    background: #fafafa;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin-bottom: 15px;
-}
-
-.recipe-card img {
-    border-radius: 10px;
-    margin-top: 5px;
+.meal-item button {
+  margin-left: 8px;
 }
 
 .clickable-meal {
-    text-decoration: underline;
-    cursor: pointer;
-    color: #0077cc;
+  color: #0073e6;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
-.clickable-meal:hover {
-    color: #005999;
+/* ------------ Right: Recipe Search ------------ */
+
+#recipe-search {
+  width: 55%;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
 }
 
-/* Modal */
+.search-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#recipe-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 15px;
+}
+
+.recipe-card {
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.recipe-card img {
+  width: 110px;     /* SMALLER IMAGES */
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.recipe-card button {
+  margin-top: 8px;
+}
+
+/* ------------ Modal ------------ */
+
 .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    justify-content: center;
-    align-items: center;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.65);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
-.modal-content {
-    background: white;
-    padding: 20px;
-    width: 70%;
-    max-width: 700px;
-    border-radius: 10px;
-    position: relative;
-    max-height: 90vh;
-    overflow-y: auto;
+.modal-body {
+  background: white;
+  padding: 20px;
+  max-width: 600px;
+  width: 100%;
+  border-radius: 12px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-body img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 15px;
 }
 
 .close {
-    position: absolute;
-    right: 15px;
-    top: 10px;
-    font-size: 28px;
-    cursor: pointer;
+  font-size: 28px;
+  cursor: pointer;
+  position: absolute;
+  top: 8px;
+  right: 12px;
 }
 
-.close:hover {
-    color: red;
+.danger {
+  background: #d9534f;
+  color: white;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
 }
