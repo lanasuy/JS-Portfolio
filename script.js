@@ -255,9 +255,17 @@ document.getElementById("clearResultsBtn").addEventListener("click", () => {
     document.getElementById("recipe-results").innerHTML = "";
 });
 
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && recipeModal.style.display === "flex") {  //close with esc key
+        recipeModal.style.display = "none";
+    }
+});
+
+
 // Expose modal functions globally
 window.showRecipeDetails = showRecipeDetails;
 window.selectRecipe = selectRecipe;
+
 
 
 
