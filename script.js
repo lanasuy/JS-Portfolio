@@ -214,7 +214,13 @@ async function showRecipeDetails(idMeal) {
             <ul>${ingredients.map(i => `<li>${i}</li>`).join("")}</ul>
             <h3>Instructions</h3>
             <p>${meal.strInstructions}</p>
+            <button id="modalCloseBtn">Close</button> 
+
         `;
+        document.getElementById("modalCloseBtn").addEventListener("click", () => {     //Close with X
+            recipeModal.style.display = "none";
+        });
+
 
         recipeModal.style.display = "flex";
     } catch {
@@ -245,3 +251,4 @@ document.getElementById("clearResultsBtn").addEventListener("click", () => {
 // Expose modal functions globally
 window.showRecipeDetails = showRecipeDetails;
 window.selectRecipe = selectRecipe;
+
