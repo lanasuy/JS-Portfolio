@@ -19,6 +19,12 @@ const recipeModal = document.getElementById("recipeModal");
 const recipeModalContent = document.getElementById("recipeModalContent");
 const recipeModalClose = document.getElementById("recipeModalClose");
 
+recipeModal.addEventListener("click", (e) => { //Close clicking outside of pop-up
+    if (e.target === recipeModal) {
+        recipeModal.style.display = "none";
+    }
+});
+
 if (recipeModalClose) {
     recipeModalClose.addEventListener("click", () => {
         recipeModal.style.display = "none";
@@ -228,13 +234,6 @@ async function showRecipeDetails(idMeal) {
     }
 }
 
-recipeModal.addEventListener("click", (e) => { //Close clicking outside of pop-up
-    if (e.target === recipeModal) {
-        recipeModal.style.display = "none";
-    }
-});
-
-
 
 function selectRecipe(recipeName, recipeId) {
     const type = mealTypeSelect.value;
@@ -259,6 +258,7 @@ document.getElementById("clearResultsBtn").addEventListener("click", () => {
 // Expose modal functions globally
 window.showRecipeDetails = showRecipeDetails;
 window.selectRecipe = selectRecipe;
+
 
 
 
