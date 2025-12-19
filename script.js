@@ -221,6 +221,13 @@ async function showRecipeDetails(idMeal) {
             recipeModal.style.display = "none";
         });
 
+        recipeModal.addEventListener("click", (e) => { //Close clicking outside of pop-up
+    if (e.target === recipeModal) {
+        recipeModal.style.display = "none";
+    }
+});
+
+
 
         recipeModal.style.display = "flex";
     } catch {
@@ -251,4 +258,5 @@ document.getElementById("clearResultsBtn").addEventListener("click", () => {
 // Expose modal functions globally
 window.showRecipeDetails = showRecipeDetails;
 window.selectRecipe = selectRecipe;
+
 
